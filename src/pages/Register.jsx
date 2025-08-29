@@ -28,7 +28,7 @@ const Register = () => {
 		const userid = nis || nik;
 
 		try {
-      const res = await axios.post('http://localhost:3000/auth/register', {
+      const res = await axios.post('http://localhost:3000/api/auth/register', {
 				name,
         userid,
         password,
@@ -37,6 +37,8 @@ const Register = () => {
 				created_at: new Date().toISOString(),
 				created_by: userid,
       });
+
+      console.log(res.data);
 
 			if (!res.data.success) {
 				setError(res.data.message || 'Registrasi gagal, silakan coba lagi.');
@@ -98,7 +100,9 @@ const Register = () => {
                 onChange={(e) => setName(e.target.value)}
                 required
               />
-							<RoleSelect role={role} setRole={setRole} />
+              <div className='mb-5'>
+                <RoleSelect role={role} setRole={setRole} />
+              </div>
 							<input 
 								type="text"
 								placeholder="NIS"
