@@ -8,17 +8,23 @@ const MySwal = withReactContent(Swal);
 
 export default function SubjectSelect({ subject, setSubject }) {
 	const [options, setOptions] = useState([]);
+	const [loading, setLoading] = useState(false);
 
 	const fetchData = async () => {
 		setLoading(true);
 		try {
-			const res = await axios.get('http://localhost:3000/api/subjects', {}, {
+			const res = await axios.get('http://localhost:3000/api/subjects', {
 				headers: {
 					Authorization: `Bearer ${localStorage.getItem('token')}`,
 				}
 			})
 
-			setOptions(res.data);
+			const newOptions = res.data?.data.map(item => ({
+				value: item.id,
+				label: item.name
+			}));
+
+			setOptions(newOptions);
 		} catch (err) {
 			MySwal.fire({
         title: 'Error',
@@ -41,7 +47,7 @@ export default function SubjectSelect({ subject, setSubject }) {
 			onChange={(opt) => setSubject(opt?.value ?? null)}
 			placeholder="Pilih Mata Pelajaran"
 			className='w-full py-1 px-2 bg-white rounded-full'
-			isClearable
+			isClearable	
     />
   );
 }

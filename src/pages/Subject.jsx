@@ -3,17 +3,18 @@ import { useSearchParams } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import axios from 'axios';
 import SearchBar from '../components/Users/SearchBar';
-import ExamTable from '../components/Exams/ExamTable';
+import SubjectTable from '../components/Subjects/SubjectTable';
 import Pagination from '../components/Paginate';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react';
+import ClassSelect from '../components/DropdownClass';
 
 const MySwal = withReactContent(Swal);
 
-const Exams = () => {
+const Subjects = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [exams, setExams] = useState([]);
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -26,11 +27,12 @@ const Exams = () => {
   const page = Number(searchParams.get('page')) || 1;
   const pageSize = 10;
 
-  // Form data for adding/editing exam
+  // Form data for adding/editing subject
   const [formData, setFormData] = useState({
     id: '',
     name: '',
     description: '',
+    class_id: '',
     created_at: new Date().toISOString(),
     updated_at: '',
   });
@@ -54,7 +56,10 @@ const Exams = () => {
       const dataList = Array.isArray(res.data?.data) ? res.data.data : [];
       const metaInfo = res.data?.meta || { total: 0 };
 
-      setExams(dataList);
+      console.log(dataList);
+      
+
+      setData(dataList);
       setMeta(metaInfo);
       setTotal(metaInfo.total);
     } catch (err) {
@@ -65,7 +70,7 @@ const Exams = () => {
         confirmButtonText: 'OK',
       });
       setSearchParams({ search: '', sort: 'title', order: 'asc', page: '1' });
-      setExams([]);
+      setData([]);
       setMeta({ total: 0 });
       setTotal(0);
       console.error('Failed to fetch subjects:', err);
@@ -78,7 +83,7 @@ const Exams = () => {
     fetchData();
   }, [page]);
 
-  // Handle form submission for adding exam
+  // Handle form submission for adding subject
   const handleSubmit = async () => {
     try {
       await axios.post('http://localhost:3000/api/subjects', formData, {
@@ -103,9 +108,9 @@ const Exams = () => {
         showConfirmButton: false,
       });
 
-      fetchExams();
+      fetchData();
     } catch (err) {
-      // Handle error adding exam
+      // Handle error adding subject
       MySwal.fire({
         title: 'Gagal!',
         text: `Gagal menambah Mata Pelajaran.`,
@@ -125,7 +130,7 @@ const Exams = () => {
     }
   };
 
-  // Open modal for editing exam
+  // Open modal for editing subject
   const handleEdit = async (id) => {
     try {
       const res = await axios.get(`http://localhost:3000/api/subjects/${id}`, {
@@ -146,21 +151,21 @@ const Exams = () => {
           duration: data.duration,
           created_at: data.created_at,
         });
-        setSelectedId(exam.id);
+        setSelectedId(subject.id);
         setEditModalOpen(true); // Open the edit modal
       }
       
     } catch (err) {
-      // Handle error fetching exam data
+      // Handle error fetching subject data
       MySwal.fire({
         title: 'Error',
-        text: 'Gagal mengambil data Ujian untuk diedit.',
+        text: 'Gagal mengambil data Mata Pelajaran untuk diedit.',
         icon: 'error',
         confirmButtonText: 'OK',
       });
       setEditModalOpen(false);
       setSelectedId(null);
-      console.error('Failed to fetch exam for edit:', err);
+      console.error('Failed to fetch subject for edit:', err);
     }
   };
 
@@ -172,7 +177,7 @@ const Exams = () => {
         updated_at: new Date().toISOString(),
       };
 
-      await axios.put(`http://localhost:3000/api/exams/${selectedId}`, updatedPayload, {
+      await axios.put(`http://localhost:3000/api/subjects/${selectedId}`, updatedPayload, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
@@ -182,18 +187,18 @@ const Exams = () => {
 
       MySwal.fire({
         title: 'Berhasil!',
-        text: `Ujian berhasil diperbarui.`,
+        text: `Mata Pelajaran berhasil diperbarui.`,
         icon: 'success',
         timer: 1500,
         showConfirmButton: false,
       });
 
-      fetchExams();
+      fetchData();
     } catch (err) {
-      // Handle error updating ujian
+      // Handle error updating mata pelajaran
       MySwal.fire({
         title: 'Gagal!',
-        text: `Gagal memperbarui Ujian.`,
+        text: `Gagal memperbarui Mata Pelajaran.`,
         icon: 'error',
         timer: 1500,
         showConfirmButton: false,
@@ -209,20 +214,20 @@ const Exams = () => {
       });
       setLoading(false);
       setShowModal(false);
-      console.error('Failed to update exam:', err);
+      console.error('Failed to update subject:', err);
     }
   };
 
   return (
     <Sidebar>
       <div className="p-6 min-h-screen bg-white rounded shadow max-w-screen-xl mx-auto overflow-hidden">
-        <h3 className="font-bold mb-4">Daftar Ujian</h3>
+        <h3 className="font-bold mb-4">Daftar Mata Pelajaran</h3>
         <div className="mb-4 flex gap-2">
           <button
             onClick={() => setShowModal(true)}
             className="bg-blue-600 hover:bg-blue-700 text-sm text-white font-semibold py-2 px-3 rounded"
           >
-            + Tambah Ujian
+            + Tambah Mata Pelajaran
           </button>
         </div>
 
@@ -253,25 +258,14 @@ const Exams = () => {
                 >
                   <DialogPanel className="w-full max-w-md transform overflow-visible rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                     <DialogTitle as="h3" className="text-lg font-medium leading-6 text-gray-900">
-                      Tambah Ujian Baru
+                      Tambah Mata Pelajaran
                     </DialogTitle>
 
                     <div className="mt-4 space-y-4">
                       <div>
-                        <label htmlFor="userid" className="block text-sm font-medium">Title</label>
+                        <label htmlFor="userid" className="block text-sm font-medium">Nama</label>
                         <input
-                          id="title"
-                          type="text"
-                          name="title"
-                          value={formData.title}
-                          onChange={handleInputChange}
-                          className="mt-1 w-full border border-2 border-gray-300 px-3 py-2 rounded"
-                        />
-                      </div>
-
-                      <div>
-                        <label htmlFor='name' className="block text-sm font-medium">Subject</label>
-                        <input
+                          id="name"
                           type="text"
                           name="name"
                           value={formData.name}
@@ -281,13 +275,25 @@ const Exams = () => {
                       </div>
 
                       <div>
-                        <label htmlFor='subject' className="pb-1 block text-sm font-medium">Mata Pelajaran</label>
+                        <label htmlFor='class' className="pb-1 block text-sm font-medium">Kelas</label>
                         <div className='border border-2 border-gray-300 rounded'>
-                          <SubjectSelect
-                            subject={formData.subject_id}
-                            setSubject={(value) => setFormData(prev => ({ ...prev, subject_id: value }))}
+                          <ClassSelect 
+                            classes={formData.class_id}
+                            setClasses={(value) => setFormData(prev => ({ ...prev, class_id: value }))}
                           />
                         </div>
+                      </div>
+
+                      <div>
+                        <label htmlFor='description' className="block text-sm font-medium">Description</label>
+                        <textarea
+                          name="description"
+                          value={formData.description}
+                          onChange={handleInputChange}
+                          className="mt-1 w-full border border-2 border-gray-300 px-3 py-2 rounded"
+                          rows={3}
+                          cols={5}
+                        />
                       </div>
                     </div>
 
@@ -403,9 +409,9 @@ const Exams = () => {
           <p className="mt-4">Loading...</p>
         ) : (
           <>
-            <ExamTable
-              data={exams}
-              onRefresh={fetchExams}
+            <SubjectTable
+              data={data}
+              onRefresh={fetchData}
               searchParams={searchParams}
               setSearchParams={setSearchParams}
               onEdit={handleEdit}
@@ -433,4 +439,4 @@ const Exams = () => {
   );
 };
 
-export default Exams;
+export default Subjects;

@@ -7,7 +7,8 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 
 import Users from "./pages/Users";
-import Exam from "./pages/Exam";
+import    Exam from "./pages/Exam";
+import Subject from "./pages/Subject";
 
 function App() {
   return (
@@ -36,6 +37,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Exam />  
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/subjects"
+          element={
+            <ProtectedRoute>
+              <Subject />  
             </ProtectedRoute>
           }
         />

@@ -96,7 +96,7 @@ const UserTable = ({ data, onRefresh, searchParams, setSearchParams, onEdit }) =
                     <span className="text-white text-xs font-medium">{user.role}</span>
                   </div>
                 </td>
-                <td className="flex justify-center px-4 py-1 border border-gray-200">
+                <td className="px-4 py-1 border border-gray-200">
                   <ToggleStatusButton
                     label={user.name}
                     isActive={user.is_active}
