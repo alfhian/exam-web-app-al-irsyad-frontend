@@ -13,7 +13,7 @@ export default function SubjectSelect({ subject, setSubject }) {
 	const fetchData = async () => {
 		setLoading(true);
 		try {
-			const res = await axios.get('http://localhost:3000/api/subjects', {
+			const res = await axios.get('http://localhost:3000/api/subjects/all', {
 				headers: {
 					Authorization: `Bearer ${localStorage.getItem('token')}`,
 				}
@@ -21,7 +21,7 @@ export default function SubjectSelect({ subject, setSubject }) {
 
 			const newOptions = res.data?.data.map(item => ({
 				value: item.id,
-				label: item.name
+				label: `${item.name} - ${item.class_id}`
 			}));
 
 			setOptions(newOptions);

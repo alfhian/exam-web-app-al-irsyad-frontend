@@ -9,12 +9,16 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react';
 import SubjectSelect from '../components/DropdownSubject';
+import CustomDatePicker from "../components/CustomDatePicker";
+import ExamTypeSelect from '../components/DropdownExamType';
+import { format } from 'date-fns';
 
 const MySwal = withReactContent(Swal);
 
 const Exams = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [exams, setExams] = useState([]);
+  const [type, setType] = useState('Reguler');
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -22,10 +26,11 @@ const Exams = () => {
   const [total, setTotal] = useState(0);
   const [meta, setMeta] = useState({ total: 0 });
   const search = searchParams.get('search') || '';
-  const sort = searchParams.get('sort') || 'name';
+  const sort = searchParams.get('sort') || 'title';
   const order = searchParams.get('order') || 'asc';
   const page = Number(searchParams.get('page')) || 1;
   const pageSize = 10;
+  const today = new Date().toISOString().split("T")[0];
 
   // Form data for adding/editing exam
   const [formData, setFormData] = useState({
@@ -33,6 +38,7 @@ const Exams = () => {
     subject_id: '',
     title: '',
     date: '',
+    type: 'Reguler',
     duration: 0,
     created_at: new Date().toISOString(),
     updated_at: '',
@@ -42,6 +48,12 @@ const Exams = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Handle date change for form data
+  const handleDateChange = (date) => {
+    const formatted = format(date, 'yyyy-MM-dd');
+    setFormData(prev => ({ ...prev, date: formatted }));
   };
 
   const fetchExams = async () => {
@@ -56,6 +68,9 @@ const Exams = () => {
 
       const examList = Array.isArray(res.data?.data) ? res.data.data : [];
       const metaInfo = res.data?.meta || { total: 0 };
+
+      console.log(examList);
+      console.log(res.data);
 
       setExams(examList);
       setMeta(metaInfo);
@@ -93,6 +108,7 @@ const Exams = () => {
       setFormData({
         subject_id: '',
         title: '',
+        type: '',
         date: '',
         duration: 0,
         created_at: new Date().toISOString(),
@@ -122,6 +138,7 @@ const Exams = () => {
       setFormData({
         subject_id: '',
         title: '',
+        type: '',
         date: '',
         duration: 0,
         created_at: new Date().toISOString(),
@@ -141,7 +158,7 @@ const Exams = () => {
         },
       });
 
-      const exam = res.data[0];
+      const exam = res.data;
       
       // Set form data for editing
       if (exam) {
@@ -149,6 +166,7 @@ const Exams = () => {
           id: exam.id,
           subject_id: exam.subject_id,
           title: exam.title,
+          type: exam.type,
           date: exam.date,
           duration: exam.duration,
           created_at: exam.created_at,
@@ -210,6 +228,7 @@ const Exams = () => {
       setFormData({
         subject_id: '',
         title: '',
+        type: '',
         date: '',
         duration: 0,
         created_at: new Date().toISOString(),
@@ -265,7 +284,7 @@ const Exams = () => {
 
                     <div className="mt-4 space-y-4">
                       <div>
-                        <label htmlFor="userid" className="block text-sm font-medium">Title</label>
+                        <label htmlFor="userid" className="block text-sm font-medium">Judul</label>
                         <input
                           id="title"
                           type="text"
@@ -277,13 +296,34 @@ const Exams = () => {
                       </div>
 
                       <div>
-                        <label htmlFor='name' className="block text-sm font-medium">Subject</label>
+                        <CustomDatePicker
+                          label="Tanggal Ujian"
+                          selectedDate={formData.date}
+                          onChange={handleDateChange}
+                        />
+                      </div>
+
+                      <div>
+                        <label htmlFor='role' className="pb-1 block text-sm font-medium">Role</label>
+                        <div className='border border-2 border-gray-300 rounded'>
+                          <ExamTypeSelect 
+                            type={formData.type}
+                            setType={(value) => setFormData(prev => ({ ...prev, type: value }))}
+                          />
+                        </div>
+                      </div>
+
+
+                      <div>
+                        <label htmlFor='name' className="block text-sm font-medium">Durasi</label>
                         <input
-                          type="text"
-                          name="name"
-                          value={formData.name}
+                          type="number"
+                          name="duration"
+                          value={formData.duration}
                           onChange={handleInputChange}
                           className="mt-1 w-full border border-2 border-gray-300 px-3 py-2 rounded"
+                          min={0}
+                          step={5}
                         />
                       </div>
 
@@ -346,38 +386,60 @@ const Exams = () => {
                 >
                   <DialogPanel className="w-full max-w-md transform overflow-visible rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                     <DialogTitle as="h3" className="text-lg font-medium leading-6 text-gray-900">
-                      Edit User
+                      Edit Ujian
                     </DialogTitle>
 
                     <div className="mt-4 space-y-4">
                       <div>
-                        <label htmlFor="userid" className="block text-sm font-medium">NIK/NIS</label>
+                        <label htmlFor="userid" className="block text-sm font-medium">Judul</label>
                         <input
-                          id="userid"
+                          id="title"
                           type="text"
-                          name="userid"
-                          value={formData.userid}
+                          name="title"
+                          value={formData.title}
                           onChange={handleInputChange}
                           className="mt-1 w-full border border-2 border-gray-300 px-3 py-2 rounded"
-                          disabled
                         />
                       </div>
 
                       <div>
-                        <label htmlFor='name' className="block text-sm font-medium">Name</label>
-                        <input
-                          type="text"
-                          name="name"
-                          value={formData.name}
-                          onChange={handleInputChange}
-                          className="mt-1 w-full border border-2 border-gray-300 px-3 py-2 rounded"
+                        <CustomDatePicker
+                          label="Tanggal Ujian"
+                          selectedDate={formData.date}
+                          onChange={handleDateChange}
                         />
                       </div>
 
                       <div>
                         <label htmlFor='role' className="pb-1 block text-sm font-medium">Role</label>
                         <div className='border border-2 border-gray-300 rounded'>
-                          
+                          <ExamTypeSelect 
+                            type={formData.type}
+                            setType={(value) => setFormData(prev => ({ ...prev, type: value }))}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label htmlFor='name' className="block text-sm font-medium">Durasi</label>
+                        <input
+                          type="number"
+                          name="duration"
+                          value={formData.duration}
+                          onChange={handleInputChange}
+                          className="mt-1 w-full border border-2 border-gray-300 px-3 py-2 rounded"
+                          min={0}
+                          step={5}
+                        />
+                      </div>
+
+                      <div>
+                        <label htmlFor='subject' className="pb-1 block text-sm font-medium">Mata Pelajaran</label>
+                        <div className='border border-2 border-gray-300 rounded'>
+                          <SubjectSelect
+                            subject={formData.subject_id}
+                            setSubject={(value) => setFormData(prev => ({ ...prev, subject_id: value }))}
+                          />
                         </div>
                       </div>
                     </div>

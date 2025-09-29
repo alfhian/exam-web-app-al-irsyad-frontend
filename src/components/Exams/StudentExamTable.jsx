@@ -1,20 +1,14 @@
-import React, { useState } from 'react';
-import StudentsModal from '../StudentsModal';
+import React from 'react';
 import formatDateOnly from '../../utils/formatDateOnly';
 import { HiChevronUp, HiChevronDown, HiSelector } from 'react-icons/hi';
-import ActionMenu from '../ActionMenu';
 import PropTypes from 'prop-types';
+import ActionMenu from '../ActionMenu';
+import { useNavigate } from 'react-router-dom';
 
-const ExamTable = ({ data, onRefresh, searchParams, setSearchParams, onEdit }) => {
+const StudentExamTable = ({ data, searchParams, setSearchParams, onStart }) => {
+	const navigate = useNavigate();
   const sort = searchParams.get('sort') || 'title';
   const order = searchParams.get('order') || 'asc';
-  const [selectedExamId, setSelectedExamId] = useState(null);
-  const [showStudents, setShowStudents] = useState(false);
-
-  const openStudentsModal = (examId) => {
-    setSelectedExamId(examId);
-    setShowStudents(true);
-  };
 
   const handleSort = (key) => {
     const currentSort = searchParams.get('sort');
@@ -52,6 +46,7 @@ const ExamTable = ({ data, onRefresh, searchParams, setSearchParams, onEdit }) =
               Duration (min){renderSortIndicator('duration')}
             </th>
             <th className="px-4 py-2 text-center">Actions</th>
+
           </tr>
         </thead>
         <tbody>
@@ -65,33 +60,27 @@ const ExamTable = ({ data, onRefresh, searchParams, setSearchParams, onEdit }) =
                 <td className="px-4 py-2 border border-gray-200 text-center">{formatDateOnly(exam.date)}</td>
                 <td className="px-4 py-2 border border-gray-200 text-center">{exam.duration}</td>
                 <td className="px-4 py-2 border border-gray-200 text-center">
-                  <ActionMenu itemId={exam.id} onEdit={onEdit} menu={"exam"} type={exam.type} onShowStudents={openStudentsModal}/>
+                  <ActionMenu itemId={exam.id} menu={"studentExam"}/>
                 </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="6" className="px-4 py-2 text-center text-gray-500">No exams found</td>
+              <td colSpan="6" className="px-4 py-2 text-center text-gray-500">
+                Tidak ada ujian hari ini
+              </td>
             </tr>
           )}
         </tbody>
       </table>
-
-      {/* Modal Students */}
-      <StudentsModal
-        isOpen={showStudents}
-        onClose={() => setShowStudents(false)}
-        examId={selectedExamId}
-      />
     </div>
   );
 };
-ExamTable.propTypes = {
+
+StudentExamTable.propTypes = {
   data: PropTypes.array.isRequired,
-  onRefresh: PropTypes.func,
   searchParams: PropTypes.object.isRequired,
   setSearchParams: PropTypes.func.isRequired,
-  onEdit: PropTypes.func
 };
 
-export default ExamTable;
+export default StudentExamTable;

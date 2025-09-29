@@ -139,20 +139,22 @@ const Subjects = () => {
         },
       });
 
-      const data = res.data[0];
+      const data = res.data;
       
       // Set form data for editing
       if (data) {
         setFormData({
           id: data.id,
-          subject_id: data.subject_id,
-          title: data.title,
-          date: data.date,
-          duration: data.duration,
+          name: data.name,
+          description: data.description,
+          class_id: data.class_id,
           created_at: data.created_at,
         });
-        setSelectedId(subject.id);
+        setSelectedId(data.id);
         setEditModalOpen(true); // Open the edit modal
+        console.log(editModalOpen);
+        console.log(data.title)
+        
       }
       
     } catch (err) {
@@ -345,26 +347,14 @@ const Subjects = () => {
                 >
                   <DialogPanel className="w-full max-w-md transform overflow-visible rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                     <DialogTitle as="h3" className="text-lg font-medium leading-6 text-gray-900">
-                      Edit User
+                      Edit Mata Pelajaran
                     </DialogTitle>
 
                     <div className="mt-4 space-y-4">
                       <div>
-                        <label htmlFor="userid" className="block text-sm font-medium">NIK/NIS</label>
+                        <label htmlFor="userid" className="block text-sm font-medium">Nama</label>
                         <input
-                          id="userid"
-                          type="text"
-                          name="userid"
-                          value={formData.userid}
-                          onChange={handleInputChange}
-                          className="mt-1 w-full border border-2 border-gray-300 px-3 py-2 rounded"
-                          disabled
-                        />
-                      </div>
-
-                      <div>
-                        <label htmlFor='name' className="block text-sm font-medium">Name</label>
-                        <input
+                          id="name"
                           type="text"
                           name="name"
                           value={formData.name}
@@ -374,10 +364,25 @@ const Subjects = () => {
                       </div>
 
                       <div>
-                        <label htmlFor='role' className="pb-1 block text-sm font-medium">Role</label>
+                        <label htmlFor='class' className="pb-1 block text-sm font-medium">Kelas</label>
                         <div className='border border-2 border-gray-300 rounded'>
-                          
+                          <ClassSelect 
+                            classes={formData.class_id}
+                            setClasses={(value) => setFormData(prev => ({ ...prev, class_id: value }))}
+                          />
                         </div>
+                      </div>
+
+                      <div>
+                        <label htmlFor='description' className="block text-sm font-medium">Description</label>
+                        <textarea
+                          name="description"
+                          value={formData.description}
+                          onChange={handleInputChange}
+                          className="mt-1 w-full border border-2 border-gray-300 px-3 py-2 rounded"
+                          rows={3}
+                          cols={5}
+                        />
                       </div>
                     </div>
 

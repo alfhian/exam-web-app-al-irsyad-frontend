@@ -7,7 +7,12 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 
 import Users from "./pages/Users";
-import    Exam from "./pages/Exam";
+import Exam from "./pages/Exam";
+import StudentExam from "./pages/StudentExam";
+import SubmittedExam from "./pages/SubmittedExam";
+import SubmittedExamDetail from "./pages/SubmittedExamDetail";
+import StudentExamPage from "./pages/StudentExamPage";
+import Questionnaire from "./pages/Questionnaire";
 import Subject from "./pages/Subject";
 
 function App() {
@@ -41,10 +46,54 @@ function App() {
           }
         />
         <Route
+          path="/exam/:examId/questionnaire"
+          element={
+            <ProtectedRoute>
+              <Questionnaire />  
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/subjects"
           element={
             <ProtectedRoute>
               <Subject />  
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/student/exam"
+          element={
+            <ProtectedRoute>
+              <StudentExam />  
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/student/exam/:examId"
+          element={
+            <ProtectedRoute>
+              <StudentExamPage />  
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/student/exam-submissions"
+          element={
+            <ProtectedRoute>
+              <SubmittedExam />  
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/student/submitted-exam/:submissionId"
+          element={
+            <ProtectedRoute>
+              <SubmittedExamDetail />  
             </ProtectedRoute>
           }
         />

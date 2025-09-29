@@ -48,7 +48,7 @@ const SubjectTable = ({ data, onRefresh, searchParams, setSearchParams, onEdit }
                 <td className="px-4 py-2 border border-gray-200">Kelas {subject.class_id}</td>
                 <td className="px-4 py-2 border border-gray-200">{subject.description}</td>
                 <td className="px-4 py-2 border border-gray-200 text-center">
-                  <ActionMenu itemId={subject.id} onEdit={onEdit} />
+                  <ActionMenu itemId={subject.id} onEdit={onEdit} menu="subjects"/>
                 </td>
               </tr>
             ))

@@ -8,7 +8,7 @@ import axios from 'axios';
 
 const MySwal = withReactContent(Swal);
 
-const UserTable = ({ data, onRefresh, searchParams, setSearchParams, onEdit }) => {
+const UserTable = ({ data, onRefresh, searchParams, setSearchParams, onEdit, onEditSiswa }) => {
   const sort = searchParams.get('sort') || 'name';
   const order = searchParams.get('order') || 'asc';
 
@@ -104,7 +104,7 @@ const UserTable = ({ data, onRefresh, searchParams, setSearchParams, onEdit }) =
                   />
                 </td>
                 <td className="px-4 py-1 border border-gray-200 text-center">{formatDate(user.created_at)}</td>
-                <td className="px-4 py-1 border border-gray-200 text-center"><ActionMenu userId={user.id} onEdit={onEdit} /></td>
+                <td className="px-4 py-1 border border-gray-200 text-center"><ActionMenu itemId={user.id} onEdit={onEdit} menu={'user'} type={user.role} onEditSiswa={onEditSiswa}/></td>
               </tr>
             ))
           ) : (

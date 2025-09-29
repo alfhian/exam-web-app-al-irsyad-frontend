@@ -10,6 +10,8 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react';
 import { jwtDecode } from 'jwt-decode';
+import ClassSelect from '../components/DropdownClass';
+import GenderSelect from '../components/DropdownGender';
 
 const MySwal = withReactContent(Swal);
 
@@ -21,6 +23,7 @@ const Users = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editSiswaModalOpen, setEditSiswaModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const search = searchParams.get('search') || '';
   const sort = searchParams.get('sort') || 'name';
@@ -36,7 +39,10 @@ const Users = () => {
   const [formData, setFormData] = useState({
     id: '',
     userid: '',
+    nisn: '',
     name: '',
+    gender: '',
+    class_id: '',
     password: '123456',
     role: 'admin',
     is_active: true,
@@ -61,8 +67,11 @@ const Users = () => {
         setFormData({
           id: user.id,
           userid: user.userid,
+          nisn: user.nisn,
           name: user.name,
-          password: '123456',
+          gender: user.gender,
+          class_id: user.class_id,
+          password: user.password,
           role: user.role,
           is_active: user.is_active,
           created_at: user.created_at,
@@ -80,6 +89,50 @@ const Users = () => {
         confirmButtonText: 'OK',
       });
       setEditModalOpen(false);
+      setSelectedUserId(null);
+      console.error('Failed to fetch user for edit:', err);
+    }
+  };
+
+
+  // Open modal for editing user siswa
+  const handleEditUserSiswa = async (userId) => {
+    try {
+      const res = await axios.get(`http://localhost:3000/api/users/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      const user = res.data[0];
+      
+      // Set form data for editing
+      if (user) {
+        setFormData({
+          id: user.id,
+          userid: user.userid,
+          nisn: user.nisn,
+          name: user.name,
+          gender: user.gender,
+          class_id: user.class_id,
+          password: user.password,
+          role: user.role,
+          is_active: user.is_active,
+          created_at: user.created_at,
+        });
+        setSelectedUserId(user.id);
+        setEditSiswaModalOpen(true); // Open the edit modal
+      }
+      
+    } catch (err) {
+      // Handle error fetching user data
+      MySwal.fire({
+        title: 'Error',
+        text: 'Gagal mengambil data user untuk diedit.',
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
+      setEditSiswaModalOpen(false);
       setSelectedUserId(null);
       console.error('Failed to fetch user for edit:', err);
     }
@@ -131,7 +184,63 @@ const Users = () => {
       setSelectedUserId(null);
       setFormData({
         userid: '',
+        nisn: '',
         name: '',
+        gender: '',
+        class_id: '',
+        password: '123456',
+        role: 'admin',
+        is_active: true,
+        created_at: new Date().toISOString(),
+      });
+      setLoading(false);
+      setShowModal(false);
+      console.error('Failed to update user:', err);
+    }
+  };
+
+  // Handle update user siswa
+  const handleUpdateSiswa = async () => {
+    try {
+      const updatedPayload = {
+        ...formData,
+        updated_at: new Date().toISOString(),
+      };
+
+      await axios.put(`http://localhost:3000/api/users/siswa/${selectedUserId}`, updatedPayload, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      setEditSiswaModalOpen(false);
+
+      MySwal.fire({
+        title: 'Berhasil!',
+        text: `User berhasil diperbarui.`,
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false,
+      });
+
+      fetchUsers();
+    } catch (err) {
+      // Handle error updating user
+      MySwal.fire({
+        title: 'Gagal!',
+        text: `Gagal memperbarui user.`,
+        icon: 'error',
+        timer: 1500,
+        showConfirmButton: false,
+      });
+      setEditSiswaModalOpen(false);
+      setSelectedUserId(null);
+      setFormData({
+        userid: '',
+        nisn: '',
+        name: '',
+        gender: '',
+        class_id: '',
         password: '123456',
         role: 'admin',
         is_active: true,
@@ -155,7 +264,10 @@ const Users = () => {
 
       setFormData({
         user_id: '',
+        nisn: '',
         name: '',
+        gender: '',
+        class_id: '',
         password: '123456',
         role: 'admin',
         status: true,
@@ -185,7 +297,10 @@ const Users = () => {
       setShowModal(false);
       setFormData({
         userid: '',
+        nisn: '',
         name: '',
+        gender: '',
+        class_id: '',
         password: '123456',
         role: 'admin',
         is_active: true,
@@ -484,6 +599,126 @@ const Users = () => {
         </Transition>
 
 
+        <Transition appear show={editSiswaModalOpen} as={Fragment}>
+          <Dialog as="div" className="relative z-10" onClose={() => setEditSiswaModalOpen(false)}>
+            <TransitionChild
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-[rgba(0,0,0,0.3)] backdrop-blur-sm" />
+            </TransitionChild>
+
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex min-h-full items-center justify-center p-4 text-center">
+                <TransitionChild
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 scale-95"
+                  enterTo="opacity-100 scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 scale-100"
+                  leaveTo="opacity-0 scale-95"
+                >
+                  <DialogPanel className="w-full max-w-md transform overflow-visible rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                    <DialogTitle as="h3" className="text-lg font-medium leading-6 text-gray-900">
+                      Edit Profile Siswa
+                    </DialogTitle>
+
+                    <div className="mt-4 space-y-4">
+                      <div>
+                        <label htmlFor="userid" className="block text-sm font-medium">NIK/NIS</label>
+                        <input
+                          id="userid"
+                          type="text"
+                          name="userid"
+                          value={formData.userid}
+                          onChange={handleInputChange}
+                          className="mt-1 w-full border border-2 border-gray-300 px-3 py-2 rounded"
+                          disabled
+                        />
+                      </div>
+
+                      <div>
+                        <label htmlFor="userid" className="block text-sm font-medium">NISN</label>
+                        <input
+                          id="nisn"
+                          type="text"
+                          name="nisn"
+                          value={formData.nisn}
+                          onChange={handleInputChange}
+                          className="mt-1 w-full border border-2 border-gray-300 px-3 py-2 rounded"
+                        />
+                      </div>
+
+                      <div>
+                        <label htmlFor='name' className="block text-sm font-medium">Name</label>
+                        <input
+                          type="text"
+                          name="name"
+                          value={formData.name}
+                          onChange={handleInputChange}
+                          className="mt-1 w-full border border-2 border-gray-300 px-3 py-2 rounded"
+                        />
+                      </div>
+
+                      <div>
+                        <label htmlFor='gender' className="pb-1 block text-sm font-medium">Jenis Kelamin</label>
+                        <div className='border border-2 border-gray-300 rounded'>
+                          <GenderSelect
+                            gender={formData.gender}
+                            setGender={(value) => setFormData(prev => ({ ...prev, gender: value }))}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label htmlFor='class' className="pb-1 block text-sm font-medium">Kelas</label>
+                        <div className='border border-2 border-gray-300 rounded'>
+                          <ClassSelect
+                            classes={formData.class_id}
+                            setClasses={(value) => setFormData(prev => ({ ...prev, class_id: value }))}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label htmlFor='role' className="pb-1 block text-sm font-medium">Role</label>
+                        <div className='border border-2 border-gray-300 rounded'>
+                          <RoleSelect 
+                            role={formData.role}
+                            setRole={(value) => setFormData(prev => ({ ...prev, role: value }))}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-6 flex justify-end space-x-2">
+                      <button
+                        onClick={() => setEditModalOpen(false)}
+                        className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleUpdateSiswa}
+                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                      >
+                        Update
+                      </button>
+                    </div>
+                  </DialogPanel>
+                </TransitionChild>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
+
+
         <SearchBar value={search}/>
         {loading ? (
           <p className="mt-4">Loading...</p>
@@ -495,6 +730,7 @@ const Users = () => {
               searchParams={searchParams}
               setSearchParams={setSearchParams}
               onEdit={handleEditUser}
+              onEditSiswa={handleEditUserSiswa}
             />
             <div className="flex items-center justify-between mt-4">
               <div className="text-sm text-gray-600">
