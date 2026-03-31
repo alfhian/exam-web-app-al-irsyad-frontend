@@ -26,7 +26,7 @@ const StudentExams = () => {
   const fetchStudentExams = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:3000/api/exams/today", {
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/exams/today`, {
         params: { search, sort, order, page, limit: pageSize },
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,

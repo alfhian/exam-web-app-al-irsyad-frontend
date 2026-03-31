@@ -26,7 +26,7 @@ const SubmittedExams = () => {
   const fetchSubmissions = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:3000/api/exam-submissions/me", {
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/exam-submissions/me`, {
         params: { search, sort, order, page, limit: pageSize },
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });

@@ -2,21 +2,21 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./routes/ProtectedRoutes";
 
 // Importing the pages
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login.jsx";
+import Register from "./pages/Register.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
 
-import Users from "./pages/Users";
-import Exam from "./pages/Exam";
-import StudentExam from "./pages/StudentExam";
-import SubmittedExam from "./pages/SubmittedExam";
-import SubmittedExamDetail from "./pages/SubmittedExamDetail";
-import StudentExamPage from "./pages/StudentExamPage";
-import TeacherExam from "./pages/TeacherExam";
-import TeacherExamStudents from "./pages/TeacherExamStudents";
-import TeacherExamScoring from "./pages/TeacherExamScoring";
-import Questionnaire from "./pages/Questionnaire";
-import Subject from "./pages/Subject";
+import Users from "./pages/Users.jsx";
+import Exam from "./pages/Exam.jsx";
+import StudentExam from "./pages/StudentExam.jsx";
+import SubmittedExam from "./pages/SubmittedExam.jsx";
+import SubmittedExamDetail from "./pages/SubmittedExamDetail.jsx";
+import StudentExamPage from "./pages/StudentExamPage.jsx";
+import TeacherExam from "./pages/TeacherExam.jsx";
+import TeacherExamStudents from "./pages/TeacherExamStudents.jsx";
+import TeacherExamScoring from "./pages/TeacherExamScoring.jsx";
+import Questionnaire from "./pages/Questionnaire.jsx";
+import Subject from "./pages/Subject.jsx";
 
 function App() {
   return (
