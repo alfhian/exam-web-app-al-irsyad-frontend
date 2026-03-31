@@ -24,10 +24,10 @@ export default function StudentsModal({ isOpen, onClose, examId }) {
     try {
       const [allUsersRes, examUsersRes] = await Promise.all([
         fetch(
-          `http://localhost:3000/api/users/role?role=SISWA&examId=${examId}&page=${page}&limit=${pagination.limit}`,
+          `${import.meta.env.VITE_API_BASE_URL}/users/role?role=SISWA&examId=${examId}&page=${page}&limit=${pagination.limit}`,
           { headers: { Authorization: `Bearer ${token}` } }
         ).then((res) => res.json()),
-        fetch(`http://localhost:3000/api/exams/${examId}/students`, {
+        fetch(`${import.meta.env.VITE_API_BASE_URL}/exams/${examId}/students`, {
           headers: { Authorization: `Bearer ${token}` },
         }).then((res) => res.json()),
       ]);
@@ -63,7 +63,7 @@ export default function StudentsModal({ isOpen, onClose, examId }) {
 
   const handleSave = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/api/exams/${examId}/students`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/exams/${examId}/students`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

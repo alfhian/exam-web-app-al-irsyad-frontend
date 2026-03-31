@@ -92,7 +92,7 @@ const Users = () => {
   // Submit user
   const handleSubmit = async () => {
     try {
-      await axios.post("http://localhost:3000/api/users", formData, {
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/users`, formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setShowModal(false);

@@ -81,7 +81,7 @@ const Questionnaire = () => {
     setLoading(true);
     try {
       const res = await axios.get(
-        `http://localhost:3000/api/exams/${examId}/questionnaires`,
+        `${import.meta.env.VITE_API_BASE_URL}/exams/${examId}/questionnaires`,
         {
           params: { search, page, limit: pageSize },
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -108,7 +108,7 @@ const Questionnaire = () => {
   const handleSubmit = async () => {
     try {
       await axios.post(
-        `http://localhost:3000/api/exams/${examId}/questionnaires`,
+        `${import.meta.env.VITE_API_BASE_URL}/exams/${examId}/questionnaires`,
         formData,
         { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
@@ -133,7 +133,7 @@ const Questionnaire = () => {
   const handleEdit = async (id) => {
     try {
       const res = await axios.get(
-        `http://localhost:3000/api/exams/${examId}/questionnaires/${id}`,
+        `${import.meta.env.VITE_API_BASE_URL}/exams/${examId}/questionnaires/${id}`,
         { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
       
@@ -163,7 +163,7 @@ const Questionnaire = () => {
   const handleUpdate = async () => {
     try {
       await axios.put(
-        `http://localhost:3000/api/exams/${examId}/questionnaires/${selectedId}`,
+        `${import.meta.env.VITE_API_BASE_URL}/exams/${examId}/questionnaires/${selectedId}`,
         formData,
         { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );

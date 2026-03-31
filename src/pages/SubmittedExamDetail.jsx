@@ -18,7 +18,7 @@ const SubmittedExamDetail = () => {
     setLoading(true);
     try {
       const res = await axios.get(
-        `http://localhost:3000/api/exam-submissions/${submissionId}`,
+        `${import.meta.env.VITE_API_BASE_URL}/exam-submissions/${submissionId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

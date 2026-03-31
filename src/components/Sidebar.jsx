@@ -44,7 +44,7 @@ const Sidebar = ({ children }) => {
       }
 
       await axios.post(
-        "http://localhost:3000/api/auth/logout",
+        `${import.meta.env.VITE_API_BASE_URL}/auth/logout`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );

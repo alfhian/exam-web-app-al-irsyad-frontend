@@ -24,7 +24,7 @@ export default function ActionMenu({
       const token = localStorage.getItem("token");
 
       const { data } = await axios.get(
-        `http://localhost:3000/api/exam-submissions/${examId}/me`,
+        `${import.meta.env.VITE_API_BASE_URL}/exam-submissions/${examId}/me`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 

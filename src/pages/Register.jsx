@@ -28,7 +28,7 @@ const Register = () => {
 		const userid = nis || nik;
 
 		try {
-      const res = await axios.post('http://localhost:3000/api/auth/register', {
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/register`, {
 				name,
         userid,
         password,
@@ -46,7 +46,7 @@ const Register = () => {
 				throw new Error(res.data.message || 'Registrasi gagal, silakan coba lagi.');
 			}
 
-			const login = await axios.post('http://localhost:3000/auth/login', {
+			const login = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/login`, {
         userid,
         password,
       });

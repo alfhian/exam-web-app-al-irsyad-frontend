@@ -13,7 +13,7 @@ export default function SubjectSelect({ subject, setSubject }) {
 	const fetchData = async () => {
 		setLoading(true);
 		try {
-			const res = await axios.get('http://localhost:3000/api/subjects/all', {
+			const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/subjects/all`, {
 				headers: {
 					Authorization: `Bearer ${localStorage.getItem('token')}`,
 				}

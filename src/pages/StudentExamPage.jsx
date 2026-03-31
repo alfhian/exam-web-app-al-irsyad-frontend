@@ -42,7 +42,7 @@ const StudentExamPage = () => {
         const token = localStorage.getItem("token");
 
         const { data: examData } = await axios.get(
-          `http://localhost:3000/api/exams/${examId}`,
+          `${import.meta.env.VITE_API_BASE_URL}/exams/${examId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -50,7 +50,7 @@ const StudentExamPage = () => {
         setTimeLeft(Number(examData.duration) * 60);
 
         const { data: qRes } = await axios.get(
-          `http://localhost:3000/api/exams/${examId}/questions`,
+          `${import.meta.env.VITE_API_BASE_URL}/exams/${examId}/questions`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -96,7 +96,7 @@ const StudentExamPage = () => {
       Swal.fire("Peringatan!", msg, "warning");
       if (sessionId && !submitting) {
         await axios.post(
-          `http://localhost:3000/api/exam-sessions/${sessionId}/tab-switch`,
+          `${import.meta.env.VITE_API_BASE_URL}/exam-sessions/${sessionId}/tab-switch`,
           {},
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -195,7 +195,7 @@ const StudentExamPage = () => {
 
         try {
           console.log("➡️ Starting fetch upload...");
-          const res = await fetch(`http://localhost:3000/api/exam-sessions/${sessionId}/upload-video`, {
+          const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/exam-sessions/${sessionId}/upload-video`, {
             method: "POST",
             headers: {
               Authorization: `Bearer ${token}`, // Jangan set Content-Type
@@ -244,7 +244,7 @@ const StudentExamPage = () => {
   const handleStart = async () => {
     try {
       const { data } = await axios.post(
-        `http://localhost:3000/api/exam-sessions/${examId}/start`,
+        `${import.meta.env.VITE_API_BASE_URL}/exam-sessions/${examId}/start`,
         {},
         { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
@@ -308,7 +308,7 @@ const StudentExamPage = () => {
       };
 
       await axios.post(
-        `http://localhost:3000/api/exam-submissions/${examId}`,
+        `${import.meta.env.VITE_API_BASE_URL}/exam-submissions/${examId}`,
         payload,
         {
           headers: {
@@ -320,7 +320,7 @@ const StudentExamPage = () => {
 
       if (sessionId) {
         await axios.post(
-          `http://localhost:3000/api/exam-sessions/${sessionId}/finish`,
+          `${import.meta.env.VITE_API_BASE_URL}/exam-sessions/${sessionId}/finish`,
           {},
           { headers: { Authorization: `Bearer ${token}` } }
         );

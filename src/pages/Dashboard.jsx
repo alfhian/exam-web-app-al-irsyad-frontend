@@ -30,13 +30,13 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         if (userRole === "admin" || userRole === "teacher") {
-          const res = await axios.get("http://localhost:3000/api/dashboard-data", {
+          const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/dashboard-data`, {
             headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
           });
           setStats(res.data.stats || stats);
           setAnnouncements(res.data.announcements || []);
         } else {
-          const res = await axios.get("http://localhost:3000/api/student-dashboard", {
+          const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/student-dashboard`, {
             headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
           });
           setStudentData(res.data || {});
